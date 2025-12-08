@@ -1,0 +1,167 @@
+/* Fichier : style.css */
+
+/* ================================================================= */
+/* 1. MISE EN PAGE GLOBALE ET CENTRAGE DU CONTENU PRINCIPAL */
+/* ================================================================= */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    /* Fond de page léger */
+
+    /* Utilisation de Flexbox pour centrer le conteneur principal */
+    display: flex;
+    justify-content: center;
+    /* Centre horizontalement */
+    align-items: flex-start;
+    /* Aligne le contenu en haut de la fenêtre */
+    min-height: 100vh;
+    /* Prend toute la hauteur de l'écran */
+    margin: 0;
+    padding-top: 50px;
+    /* Espace au-dessus du conteneur principal */
+}
+
+/* Style du conteneur principal (Gris Quartz Centré) */
+.content-container {
+    background-color: #EAEAEA;
+    /* Gris Quartz Clair */
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    padding: 30px;
+    width: 90%;
+    max-width: 1100px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.078);
+    text-align: center;
+    /* Centre les éléments enfants (titre, boutons) */
+    min-height: 200px;
+}
+
+/* Styles pour les autres éléments (h1, buttons, inputs) */
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Styles pour le Tableau centré */
+table {
+    margin-left: auto;
+    /* Centrage automatique */
+    margin-right: auto;
+    /* Centrage automatique */
+    width: 95%;
+    /* 95% pour laisser une marge et rendre le centrage visible */
+    margin-bottom: 25px;
+    border-collapse: collapse;
+    border: 2px solid black;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #999;
+}
+
+/* Style pour l'entête du tableau (th) */
+th {
+    background-color: #0066ff;
+    /* Bleu */
+    color: white;
+    font-weight: bold;
+    border: 1px solid #ff0026;
+}
+
+button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.modal-content form input[type="text"],
+.modal-content form input[type="date"],
+.modal-content form input[type="number"],
+.modal-content form select {
+    width: 95%;
+    padding: 8px;
+    margin: 5px 0 15px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+.modal-content form label {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+/* ================================================================= */
+/* 2. STYLES DES MODALES */
+/* ================================================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+
+    border-radius: 12px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* Ajustements pour les boutons de fermeture des modales */
+.close,
+.delete-close,
+.edit-close {
+    color: white;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+
+    background-color: #dc3545;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    border-radius: 4px;
+    padding: 0;
+    margin-top: -10px;
+    margin-right: -10px;
+}
+
+.close:hover,
+.close:focus,
+.delete-close:hover,
+.delete-close:focus,
+.edit-close:hover,
+.edit-close:focus {
+    background-color: #c82333;
+    color: white;
+    text-decoration: none;
+}
