@@ -9,60 +9,70 @@
 <body>
 
     <div class="content-container">
-
         <h1>Liste des livres</h1>
 
         <table>
-            <tr>
-                <th>Id</th>
-                <th>Titre de l'Oeuvre</th>
-                <th>Nom de l'Autheur</th>
-                <th>Prénom de l'Autheur</th>
-                <th>Date de Sortie</th>
-                <th>Prix</th>
-                <th>Commander</th>
-                <th>Action</th>
-            </tr>
-            <tr th:each="book : ${books}">
-                <td th:text="${book.idBook}"></td>
-                <td th:text="${book.nameBook}"></td>
-                <td th:text="${book.authorLastName}"></td>
-                <td th:text="${book.authorFirstName}"></td>
-                <td th:text="${book.releaseDate}"></td>
-                <td th:text="${book.price}"></td>
-                <td th:text="${book.orderStatus}"></td>
-                <td>
-                    <button class="open-edit-btn" th:data-id="${book.idBook}" th:data-name="${book.nameBook}"
-                        th:data-author-first="${book.authorFirstName}" th:data-author-last="${book.authorLastName}"
-                        th:data-date="${book.releaseDate}" th:data-price="${book.price}"
-                        th:data-status="${book.orderStatus}">
-                        Modifier
-                    </button>
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Titre de l'Oeuvre</th>
+                    <th>Nom de l'Autheur</th>
+                    <th>Prénom de l'Autheur</th>
+                    <th>Date de Sortie</th>
+                    <th>Prix</th>
+                    <th>Couverture</th>
+                    <th>Commander</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="book : ${books}">
+                    <td th:text="${book.idBook}"></td>
+                    <td th:text="${book.nameBook}"></td>
+                    <td th:text="${book.authorLastName}"></td>
+                    <td th:text="${book.authorFirstName}"></td>
+                    <td th:text="${book.releaseDate}"></td>
+                    <td th:text="${book.price}"></td>
+                    <td>
+                        <img th:src="${book.imageUrl}" alt="image">
+                    </td>
+                    <td th:text="${book.orderStatus}"></td>
+                    <td>
+                        <button class="open-edit-btn" th:data-id="${book.idBook}" th:data-name="${book.nameBook}"
+                            th:data-author-first="${book.authorFirstName}" th:data-author-last="${book.authorLastName}"
+                            th:data-date="${book.releaseDate}" th:data-price="${book.price}"
+                            th:data-status="${book.orderStatus}">
+                            Modifier
+                        </button>
+
+                        <button class="open-delete-btn" th:data-id="${book.idBook}" style="background-color: #dc3545;">
+                            Supprimer
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
 
-        <div>
+        <div style="margin-top: 20px;">
             <button id="openModalBtn">Ajouter un nouveau livre</button>
-            <button id="openDeleteModalBtn">Supprimer un livre</button>
+            <button id="openDeleteModalBtn" style="display:none;">Supprimer un livre</button>
         </div>
-
     </div>
+
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Formulaire d'ajout de livre</h2>
             <form th:action="@{/books/add}" method="post">
-
                 <input type="text" name="nameBook" placeholder="Nom du livre" required>
+                <div id="coverPreview">
+                    <img id="bookCover" alt="">
+                </div>
                 <input type="text" name="authorFirstName" placeholder="Prénom de l'auteur">
                 <input type="text" name="authorLastName" placeholder="Nom de l'auteur">
-
                 <label for="releaseDate">Date de sortie:</label>
                 <input type="date" id="releaseDate" name="releaseDate" required>
-
                 <input type="number" name="price" step="0.01" placeholder="Prix (ex: 19.99)">
-
                 <label for="orderStatus">Statut de la commande:</label>
                 <select id="orderStatus" name="orderStatus" required>
                     <option value="">-- Choisir un statut --</option>
@@ -70,7 +80,6 @@
                     <option value="ACHETE">Acheté</option>
                     <option value="PAS_COMMANDE">Pas Commandé</option>
                 </select>
-
                 <button type="submit">Ajouter</button>
             </form>
         </div>
@@ -79,40 +88,40 @@
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close edit-close">&times;</span>
-            <h2>Formulaire de modification de livre</h2>
+            <h2>Modifier le livre</h2>
             <form th:action="@{/books/edit}" method="post">
                 <input type="hidden" id="editBookId" name="idBook">
-                <input type="text" id="editNameBook" name="nameBook" placeholder="Nom du livre" required>
-                <input type="text" id="editAuthorFirstName" name="authorFirstName" placeholder="Prénom de l'auteur">
-                <input type="text" id="editAuthorLastName" name="authorLastName" placeholder="Nom de l'auteur">
-                <label for="editReleaseDate">Date de sortie:</label>
+
+                <input type="text" id="editNameBook" name="nameBook" required>
+                <input type="text" id="editAuthorFirstName" name="authorFirstName">
+                <input type="text" id="editAuthorLastName" name="authorLastName">
                 <input type="date" id="editReleaseDate" name="releaseDate" required>
-                <input type="number" id="editPrice" name="price" step="0.01" placeholder="Prix (ex: 19.99)">
-                <label for="editOrderStatus">Statut de la commande:</label>
+                <input type="number" id="editPrice" name="price" step="0.01">
+
                 <select id="editOrderStatus" name="orderStatus" required>
                     <option value="COMMANDE">Commandé</option>
                     <option value="ACHETE">Acheté</option>
                     <option value="PAS_COMMANDE">Pas Commandé</option>
                 </select>
+
                 <button type="submit">Enregistrer les modifications</button>
             </form>
         </div>
     </div>
 
-
     <div id="deleteModal" class="modal">
         <div class="modal-content">
-            <span class="close delete-close">&times;</span>
-            <h2>Supprimer un livre</h2>
+            <span class="delete-close close">&times;</span>
+            <h3>Confirmation</h3>
+            <p>Voulez-vous vraiment supprimer ce livre ?</p>
+
             <form th:action="@{/books/delete}" method="post">
-                <select id="livres" name="bookIdToDelete">
-                    <option value="">-- Choisir un livre --</option>
-                    <option th:each="book : ${books}" th:value="${book.idBook}" th:text="${book.nameBook}"></option>
-                </select>
-                <button type="submit" class="btn btn-danger">Supprimer</button>
+                <input type="hidden" id="deleteBookId" name="bookIdToDelete">
+                <button type="submit">Confirmer la suppression</button>
             </form>
         </div>
     </div>
+
     <script th:src="@{/script.js}"></script>
 </body>
 

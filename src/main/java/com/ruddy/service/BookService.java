@@ -35,8 +35,42 @@ public class BookService {
 
     // 3. Sauvegarde le livre (Méthode simplifiée)
     // L'ancienne méthode saveBookWithRelations est supprimée.
-    public Book saveBook(Book book) {
-        // Sauvegarde l'objet Book qui contient maintenant les champs String (Auteur, etc.)
+public Book saveBook(Book book) {
+    // Si l'ID existe, on traite ça comme une modification
+    if (book.getIdBook() != null && bookRepository.existsById(book.getIdBook())) {
+        // On récupère le livre existant en base de données
+        Book existingBook = bookRepository.findById(book.getIdBook()).get();
+        
+        // On met à jour les champs avec les nouvelles valeurs du formulaire
+        existingBook.setNameBook(book.getNameBook());
+        existingBook.setAuthorFirstName(book.getAuthorFirstName());
+        existingBook.setAuthorLastName(book.getAuthorLastName());
+        existingBook.setReleaseDate(book.getReleaseDate());
+        existingBook.setPrice(book.getPrice());
+        existingBook.setOrderStatus(book.getOrderStatus());
+        
+        // On ne régénère la photo que si le nom a changé (optionnel)
+        existingBook.setImageUrl(genererLienPhoto(book.getNameBook()));
+        
+        return bookRepository.save(existingBook);
+    } else {
+        // Si pas d'ID, c'est une création pure
+        book.setImageUrl(genererLienPhoto(book.getNameBook()));
         return bookRepository.save(book);
+    }
+}
+
+    // Ta logique de photo déplacée ici (plus propre)
+    private String genererLienPhoto(String name) {
+        if (name == null || name.isEmpty()) {
+            return "https://via.placeholder.com/150x200.png?text=Pas+de+titre";
+        }
+        
+        // On nettoie le titre pour l'URL
+        String query = name.trim().replace(" ", "%20");
+        
+        // URL Open Library par TITRE (M = Medium)
+        // C'est très efficace : ils cherchent le livre le plus populaire avec ce nom
+        return "https://covers.openlibrary.org/b/title/" + query + "-M.jpg";
     }
 }

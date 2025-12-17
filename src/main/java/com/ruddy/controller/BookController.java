@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.ruddy.model.Book;
 import com.ruddy.service.BookService;
 
-// Les imports AuthorService et CategoryService sont retirés
-
 @Controller
 @RequestMapping("/books")
 public class BookController {
@@ -21,45 +19,39 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // --- Les injections AuthorService et CategoryService sont retirées ---
-    /*
-    @Autowired
-    private AuthorService authorService;
-
-    @Autowired
-    private CategoryService categoryService;
-    */
-
-    // --- 1. AFFICHAGE DES LISTES (GET /books) ---
+    // --- 1. AFFICHAGE DE LA LISTE ---
     @GetMapping
-    public String listBooks(Model model){
-        // Récupère les données nécessaires
+    public String listBooks(Model model) {
         model.addAttribute("books", bookService.getAllBooks());
-        model.addAttribute("book", new Book()); // Objet vide pour le formulaire d'ajout
-        
-        // Les lignes pour authorService et categoryService sont retirées
-        /*
-        model.addAttribute("allAuthors", authorService.getAllAuthor()); 
-        model.addAttribute("allCategories", categoryService.getAllCategory());
-        */
-        
-        return "books"; // Vue Thymeleaf
+        model.addAttribute("book", new Book()); 
+        return "books"; 
     }
     
-    // --- 2. AJOUT D'UN LIVRE (POST /books/add) ---
+    // --- 2. AJOUT D'UN LIVRE ---
     @PostMapping("/add")
-    public String addBook(
-        @ModelAttribute Book book) // ⬅️ Les @RequestParam authorId et categoryId sont retirés
-    {
-        // Utilise la méthode du service simplifiée
-        bookService.saveBook(book); // ⬅️ Utilisation de la nouvelle méthode saveBook
-        return "redirect:/books"; // Redirection vers la page d'accueil
+    public String addBook(@ModelAttribute Book book) {
+        System.out.println("Ajout d'un nouveau livre : " + book.getNameBook());
+        bookService.saveBook(book); 
+        return "redirect:/books"; 
     }
 
-    // --- 3. SUPPRESSION D'UN LIVRE (POST /books/delete) ---
+    // --- 3. SUPPRESSION D'UN LIVRE ---
     @PostMapping("/delete")
-    public String deleteBook(@RequestParam("bookIdToDelete") Integer id){
+    public String deleteBook(@RequestParam("bookIdToDelete") Integer id) { 
+        System.out.println("Action suppression pour l'ID : " + id);
         bookService.deleteBook(id);
+        return "redirect:/books";
+    }
+
+    // --- 4. MODIFICATION D'UN LIVRE ---
+    @PostMapping("/edit")
+    public String editBook(@ModelAttribute("book") Book book, @RequestParam("idBook") Integer idBook) {
+        // On force l'ID manuellement au cas où le @ModelAttribute aurait échoué
+        book.setIdBook(idBook);
+        
+        System.out.println("FORCE ID >>> " + book.getIdBook());
+        
+        bookService.saveBook(book);
         return "redirect:/books";
     }
 }

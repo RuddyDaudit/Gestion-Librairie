@@ -2,6 +2,8 @@ package com.ruddy.model;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,10 +31,14 @@ public class Book {
     private String authorFirstName; // Prénom de l'auteur (String temporaire)
     
     @Column(name = "release_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate; // Date de sortie (Utilisation de LocalDate)
     
     private Double price; // Prix (Utilisation de Double)
     
+    @Column(name = "image_couverture")
+    private String imageUrl; //Image Url du livre
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; // État de la commande (Utilisation d'une Enum)
     
@@ -51,19 +57,21 @@ public class Book {
     public Book(){}
 
     // Constructeur complet mis à jour
-    public Book(Integer idBook, String nameBook, String authorLastName, String authorFirstName, LocalDate releaseDate, Double price, OrderStatus orderStatus) {
+    public Book(Integer idBook, String nameBook, String authorLastName, String authorFirstName, LocalDate releaseDate, Double price, String imageUrl, OrderStatus orderStatus) {
         this.idBook = idBook;
         this.nameBook = nameBook;
         this.authorLastName = authorLastName;
         this.authorFirstName = authorFirstName;
         this.releaseDate = releaseDate;
         this.price = price;
+        this.imageUrl = imageUrl;
         this.orderStatus = orderStatus;
     }
 
     // --- Getters et Setters (Mis à jour pour les nouveaux champs) ---
 
     public Integer getIdBook() { return idBook; }
+    public void setIdBook(Integer idBook) {this.idBook = idBook;}
     
     public String getNameBook() { return nameBook; }
     public void setNameBook(String nameBook) { this.nameBook = nameBook; }
@@ -79,6 +87,9 @@ public class Book {
 
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+
+    public String getImageUrl(){return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public OrderStatus getOrderStatus() { return orderStatus; }
     public void setOrderStatus(OrderStatus orderStatus) { this.orderStatus = orderStatus; }

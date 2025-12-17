@@ -1,120 +1,126 @@
-// Fichier : script.js
+// Fichier : script.js (Version Finale Corrigée)
 
-document.addEventListener('DOMContentLoaded', (event) => {
+console.log("--- SCRIPT.JS DÉMARRAGE ---");
 
-    // =================================================================
-    // LOGIQUE MODALES AJOUT (myModal) & SUPPRESSION (deleteModal)
-    // =================================================================
+// =============================================================
+// 1. VARIABLES ET ÉLÉMENTS
+// =============================================================
+const modal = document.getElementById("myModal");
+const btn = document.getElementById("openModalBtn");
+const span = modal ? modal.querySelector(".close") : null;
+const bookInput = modal ? modal.querySelector('input[name="nameBook"]') : null;
+const bookCover = document.getElementById('bookCover');
 
-    // Element de modal d'ajout
-    var modal = document.getElementById("myModal");
-    var btn = document.getElementById("openModalBtn");
-    // La première span[class="close"] (index 0) est celle de la modale d'ajout
-    var span = document.getElementsByClassName("close")[0];
+const editModal = document.getElementById("editModal");
+const editClose = document.querySelector(".edit-close");
+const editButtons = document.querySelectorAll(".open-edit-btn");
 
-    // ELEMENT DE MODAL DE SUPPRESSION
-    var deleteModal = document.getElementById("deleteModal");
-    var deleteBtn = document.getElementById("openDeleteModalBtn");
-    // On utilise la classe spécifique 'delete-close' ou on cherche la seconde 'close'
-    var deleteSpan = document.getElementsByClassName("delete-close")[0];
+const deleteModal = document.getElementById("deleteModal");
+const deleteClose = document.querySelector(".delete-close");
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
-    // Ouvrir la modale d'ajout
-    if (btn) {
-        btn.onclick = function () {
-            modal.style.display = "block";
-        }
+// =============================================================
+// 2. UTILITAIRES
+// =============================================================
+let debounceTimer;
+function debouncer(callback, delay) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(callback, delay);
+}
+
+// Fonction d'aperçu d'image (Open Library)
+function updateBookCoverPreview(title) {
+    if (!title || title.length < 2) {
+        bookCover.style.visibility = 'hidden';
+        bookCover.src = '';
+        return;
     }
+    const query = encodeURIComponent(title.trim());
+    const imageUrl = `https://covers.openlibrary.org/b/title/${query}-M.jpg`;
 
-    // Ouvrir la modale de suppression
-    if (deleteBtn) {
-        deleteBtn.onclick = function () {
-            deleteModal.style.display = "block"
-        }
-    }
+    bookCover.src = imageUrl;
+    bookCover.style.visibility = 'visible';
+    bookCover.style.display = 'block';
 
-    // Fermer la modale d'ajout
-    if (span) {
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-    }
+    bookCover.onerror = function () {
+        this.src = 'https://via.placeholder.com/150x200.png?text=Image+indisponible';
+    };
+}
 
-    // Fermer la modale de suppression
-    if (deleteSpan) {
-        deleteSpan.onclick = function () {
-            deleteModal.style.display = "none";
-        }
-    }
+// =============================================================
+// 3. LOGIQUE DES MODALES (AJOUT ET ÉDITION)
+// =============================================================
 
-    // =================================================================
-    // LOGIQUE MODALE MODIFICATION (editModal)
-    // =================================================================
+// --- AJOUT ---
+if (modal && btn) {
+    btn.onclick = () => {
+        modal.style.display = "block";
+        bookCover.style.visibility = 'hidden';
+        bookCover.src = '';
+    };
+    if (span) span.onclick = () => modal.style.display = "none";
 
-    // ELEMENTS POUR LA MODALE DE MODIFICATION
-    var editModal = document.getElementById("editModal");
-    var closeEditBtn = editModal ? editModal.querySelector(".edit-close") : null;
-    var editButtons = document.querySelectorAll(".open-edit-btn"); // Sélectionne tous les boutons 'Modifier' dans le tableau
-
-    // Champs du formulaire de modification (ID, Nom, Auteur, etc.)
-    var editBookIdInput = document.getElementById("editBookId");
-    var editNameInput = document.getElementById("editNameBook");
-    var editAuthorFirstInput = document.getElementById("editAuthorFirstName");
-    var editAuthorLastInput = document.getElementById("editAuthorLastName");
-    var editDateInput = document.getElementById("editReleaseDate");
-    var editPriceInput = document.getElementById("editPrice");
-    var editStatusSelect = document.getElementById("editOrderStatus");
-
-    // Fermeture de la modale de modification
-    if (closeEditBtn) {
-        closeEditBtn.onclick = function () {
-            editModal.style.display = "none";
-        }
-    }
-
-    // Écouteur pour tous les boutons 'Modifier' dans le tableau
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Récupérer les données du livre via les attributs data-* du bouton cliqué
-            var bookId = this.getAttribute('data-id');
-            var bookName = this.getAttribute('data-name');
-            var authorFirst = this.getAttribute('data-author-first');
-            var authorLast = this.getAttribute('data-author-last');
-            var releaseDate = this.getAttribute('data-date');
-            var price = this.getAttribute('data-price');
-            var status = this.getAttribute('data-status');
-
-            // Remplir les champs du formulaire dans la modale
-            editBookIdInput.value = bookId;
-            editNameInput.value = bookName;
-            editAuthorFirstInput.value = authorFirst;
-            editAuthorLastInput.value = authorLast;
-
-            // Gérer la date (important pour le format AAAA-MM-JJ)
-            editDateInput.value = releaseDate && releaseDate !== 'null' ? releaseDate : '';
-
-            // Remplir le prix et le statut
-            editPriceInput.value = price;
-            editStatusSelect.value = status;
-
-            // Ouvrir la modale
-            editModal.style.display = "block";
+    if (bookInput) {
+        bookInput.addEventListener('input', () => {
+            debouncer(() => updateBookCoverPreview(bookInput.value), 500);
         });
+    }
+}
+
+// --- MODIFICATION ---
+editButtons.forEach(button => {
+    button.addEventListener("click", function (e) {
+        e.preventDefault(); // On empêche tout comportement bizarre
+
+        console.log("Clic sur modifier pour l'ID : " + this.getAttribute("data-id"));
+
+        document.getElementById("editBookId").value = this.getAttribute("data-id");
+        document.getElementById("editNameBook").value = this.getAttribute("data-name");
+        document.getElementById("editAuthorFirstName").value = this.getAttribute("data-author-first");
+        document.getElementById("editAuthorLastName").value = this.getAttribute("data-author-last");
+        document.getElementById("editReleaseDate").value = this.getAttribute("data-date");
+        document.getElementById("editPrice").value = this.getAttribute("data-price");
+        document.getElementById("editOrderStatus").value = this.getAttribute("data-status");
+
+        editModal.style.display = "block";
     });
+});
+if (editClose) editClose.onclick = () => editModal.style.display = "none";
 
-    // =================================================================
-    // GESTION DU CLIC À L'EXTÉRIEUR (fenêtre)
-    // =================================================================
+// =============================================================
+// 4. LOGIQUE DE SUPPRESSION (FIX)
+// =============================================================
+document.addEventListener('click', function (event) {
+    const deleteBtn = event.target.closest('.open-delete-btn');
 
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-        if (event.target == deleteModal) {
-            deleteModal.style.display = "none";
-        }
-        // Ajout de la modale de modification
-        if (editModal && event.target == editModal) {
-            editModal.style.display = "none";
+    if (deleteBtn) {
+        const id = deleteBtn.getAttribute('data-id');
+        const hiddenInput = document.getElementById("deleteBookId");
+
+        if (id && hiddenInput) {
+            // On injecte l'ID dans l'input caché
+            hiddenInput.value = id;
+            console.log("Succès : ID " + id + " injecté dans le formulaire.");
+
+            // On affiche la modale
+            if (deleteModal) {
+                deleteModal.style.display = "block";
+            }
+        } else {
+            console.error("Erreur : ID introuvable (data-id) ou élément 'deleteBookId' absent du HTML.");
         }
     }
 });
+
+if (deleteClose) deleteClose.onclick = () => deleteModal.style.display = "none";
+
+// =============================================================
+// 5. FERMETURE GLOBALE (CLIC EN DEHORS)
+// =============================================================
+window.onclick = (event) => {
+    if (event.target == modal) modal.style.display = "none";
+    if (event.target == editModal) editModal.style.display = "none";
+    if (event.target == deleteModal) deleteModal.style.display = "none";
+};
+
+console.log("--- SCRIPT.JS CHARGÉ ET PRÊT ---");

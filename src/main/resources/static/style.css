@@ -22,6 +22,13 @@ body {
     /* Espace au-dessus du conteneur principal */
 }
 
+#bookCover {
+    max-width: 120px;
+    border-radius: 8px;
+    visibility: hidden;
+    /* cachée par défaut */
+}
+
 /* Style du conteneur principal (Gris Quartz Centré) */
 .content-container {
     background-color: #EAEAEA;
@@ -163,5 +170,60 @@ button:hover {
 .edit-close:focus {
     background-color: #c82333;
     color: white;
+    text-decoration: none;
+}
+
+/* Style des images dans le tableau */
+td img {
+    display: block;
+    margin: auto;
+    width: 50px;
+    /* Largeur fixe pour l'alignement */
+    height: 70px;
+    /* Hauteur fixe pour l'harmonie */
+    object-fit: cover;
+    /* Évite de déformer l'image */
+    border-radius: 6px;
+    /* Angles arrondis */
+    border: 1px solid #ddd;
+    background-color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Animation fluide */
+    cursor: pointer;
+    visibility: visible !important;
+}
+
+/* Effet au survol (Hover) */
+td img:hover {
+    transform: scale(1.5);
+    /* Zoom de 50% au survol */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    /* Ombre portée plus forte */
+    z-index: 10;
+    /* Passe au-dessus des autres lignes */
+    position: relative;
+}
+
+/* Aligner les boutons dans la colonne Action */
+td:last-child {
+    text-align: center;
+    /* Centre les boutons horizontalement */
+    vertical-align: middle;
+    /* Centre les boutons verticalement */
+    white-space: nowrap;
+    /* Empêche les boutons de passer l'un sous l'autre */
+}
+
+/* Style spécifique pour le bouton supprimer dans le tableau */
+.open-delete-btn {
+    background-color: #dc3545;
+}
+
+.open-delete-btn:hover {
+    background-color: #c82333;
+}
+
+#confirmDeleteBtn:hover {
+    filter: brightness(0.9);
     text-decoration: none;
 }
